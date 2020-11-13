@@ -1,0 +1,64 @@
+! A game for futures video games class
+! fantasy adventure 7289
+! back in the darkness
+! version 1
+
+Constant Story "Back in the Darkness.";
+Constant Headline "Talk to the townspeople about the mysterious heavy fog.";
+
+Include "parser";
+Include "verblib";
+Include "grammar";
+
+[ Initialise;
+  location = Forest_Glade;
+  print "
+         A hole in the ground opens and you fly out landing on your feet.
+         You are in a forest glade. 
+        ";
+];
+
+Object Forest_Glade "Forest Glade"
+ has scenery
+ has light
+ with description "A lush forest glade! There is the Town Square to the north
+                   and some old ruins to the northeast. To the west there is a field of flowers.",
+ n_to Town_Square,
+ ne_to Ruins;
+
+Object Town_Square "Town Square"
+  has light
+  with description "The town guard is here. Some militia are fighting creatures of an unknown origin. ",
+  s_to Forest_Glade;
+
+Object Ruins "Ruins"
+  has light
+  with description "Some old ruins. Nearby the ruins to the East are a group of conspicuous bushes.
+                    A forest glade is to the southwest. Some marshes are to the south.",
+  sw_to Forest_Glade,
+  e_to Cave_Entrance,
+  s_to Marshes;
+  
+Object Marshes "Marshes"
+  has light
+  with description "Have you ever seen Lord of the Rings? These marshes look a lot like that!",
+  n_to Ruins;
+
+Object Cave_Entrance "Cave Entrance"
+  has light
+  with description "An omnious carving in the mountain leads down further than you can see. There are some ruins to the west.",
+ ! connect to bushes in the ruins, after bushes are cut (machete)
+  w_to Ruins,
+  d_to Cave_Room;
+
+Object Cave_Room "Cave Room"
+  with description "The cave walls are brownish grey. It smells like rocks.",
+  u_to Cave_Entrance;
+
+! hidden cave discovered by whacking bushes with a machete
+! machete, sword, hammer, halbard
+
+!Object -> "sword"
+!  with name 'sword',
+
+End;
