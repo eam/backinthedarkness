@@ -22,9 +22,18 @@ Object Forest_Glade "Forest Glade"
  has scenery
  has light
  with description "A lush forest glade! There is the Town Square to the north
-                   and some old ruins to the northeast. To the west there is a field of flowers.",
+                   and some old ruins to the northeast. To the west there is a field of tall flowers.",
  n_to Town_Square,
+ w_to Field_of_Flowers,
  ne_to Ruins;
+
+Object Field_of_Flowers "Field of Flowers"
+ has scenery
+ has light
+ with description "A tall field of flowers. They all appear to have faces.
+                   They all seem to be staring at you curiously.
+                   There is a forest glade to the east.",
+ e_to Forest_Glade;
 
 Object Town_Square "Town Square"
   has light
