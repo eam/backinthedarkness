@@ -6,6 +6,8 @@
 Constant Story "Back in the Darkness.";
 Constant Headline "Talk to the townspeople about the mysterious heavy fog.";
 
+Constant MAX_CARRIED = 7;
+
 Include "parser";
 Include "verblib";
 Include "grammar";
@@ -47,6 +49,23 @@ Object Ruins "Ruins"
   sw_to Forest_Glade,
   e_to Cave_Entrance,
   s_to Marshes;
+
+Object -> machete "machete" 
+  with name "machete",
+  with description "A slightly rusty machete.";
+
+Object -> Ruins_Bushes "bushes"
+  with name "bushes",
+  before [; Cut:
+            ! check to see if the player is holding a machete
+            ! if so
+            ! print a message about the bushes being cut
+            ! delete the bushes object
+            ! if not, hint that they need a machete
+            print_ret "we cut the bushes";
+            return true;
+         ]
+  with description "A bush of bushy bushes. The branches look small enough to be cut by a machete.";
   
 Object Marshes "Marshes"
   has light
@@ -60,6 +79,19 @@ Object Cave_Entrance "Cave Entrance"
   w_to Ruins,
   d_to Cave_Room;
 
+Object -> Issac "Issac, the shopkeep"
+  with name "issac",
+  description "A weathered man with a two foot beared. ",
+  life [; Answer:
+          print_ret "Hello there traveler, are you interested in some of my wares?";
+          return true;
+          Attack:
+          print_ret "Issac blocks your attack with his shield and says 'Hey! If you're looking for a fight, you could've just asked to spar!'";
+         return true;
+       ],
+  has animate proper male;
+  
+
 Object Cave_Room "Cave Room"
   with description "The cave walls are brownish grey. It smells like rocks.",
   u_to Cave_Entrance;
@@ -69,5 +101,7 @@ Object Cave_Room "Cave Room"
 
 !Object -> "sword"
 !  with name 'sword',
+
+  
 
 End;
