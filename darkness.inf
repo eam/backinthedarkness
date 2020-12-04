@@ -61,9 +61,27 @@ Object Cave_Entrance "Cave Entrance"
   d_to Cave_Room;
 
 Object Cave_Room "Cave Room"
-  with description "The cave walls are brownish grey. It smells like rocks.",
-  u_to Cave_Entrance;
+  with description "The cave walls are brownish grey. It smells like sulfur.
+				    There are three tunnels that go to the east, north, and south.",
+  u_to Cave_Entrance,
+  e_to Cave_Tunnel_E;
 
+Object Cave_Tunnel_E "East Cave Tunnel"
+  with description "The heat becomes intense as you continue into the cave. A brightly lit opening is to the east.
+                    The cave room is to the west.",
+  e_to Magma_Chamber,
+  w_to Cave_Room;
+
+Object Magma_Chamber "Magma Chamber"
+  has light
+  with description "The tunnel expands to a massive chasm floored with magma. On the other side of a narrow bridge, you can see a glimmering artifact.",
+  w_to Cave_Tunnel_E;
+
+Object -> Artifact "Ancient Artifact"
+  with description "This bronze statue looks positively ancient, yet shines like the morning sun.
+                    It's small enough that you might be able to take it.";
+
+! The artifact is a quest item that someone in the town is looking for
 ! hidden cave discovered by whacking bushes with a machete
 ! machete, sword, hammer, halbard
 
