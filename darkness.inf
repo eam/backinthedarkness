@@ -64,6 +64,7 @@ Object -> machete "machete"
   with description "A slightly rusty machete.";
 
 Object -> Ruins_Bushes "bushes"
+  has static
   with name "bushes",
   before [; Cut:
             ! check to see if the player is holding a machete
@@ -76,7 +77,7 @@ Object -> Ruins_Bushes "bushes"
               remove self;
               return true;
             } else {
-              print "You karate chop the bushes with your bare hands to no avail. I wonder if there's a better way?"
+              print "You karate chop the bushes with your bare hands to no avail. I wonder if there's a better way?";
               return true;
             }
             return true;
@@ -129,16 +130,15 @@ Object -> Artifact "Ancient Artifact"
   with description "This bronze statue looks positively ancient, yet shines like the morning sun.
                     It's small enough that you might be able to take it.",
   before [; Take:
-            if(noun == e_obj && Weight in Inventory)
-			{
-			  ! if the player doesn't have a weight
-			  print "On closer inspection, you find that the artifact is sitting on a pressure plate.
-			         You'll need something heavy to put in its place.",
-			  return true;
-			} else {
-			  return false;
-			}
-		 ];
+            if(noun == e_obj && machete in player)
+              {
+                ! if the player doesn't have a weight
+                print "On closer inspection, you find that the artifact is sitting on a pressure plate. You'll need something heavy to put in its place.";
+                return true;
+              } else {
+                return false;
+              }
+         ];
 
 ! The artifact is a quest item that someone in the town is looking for
 ! hidden cave discovered by whacking bushes with a machete
