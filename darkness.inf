@@ -46,6 +46,15 @@ Object Ruins "Ruins"
   has light
   with description "Some old ruins. Nearby the ruins to the East are a group of conspicuous bushes.
                     A forest glade is to the southwest. Some marshes are to the south.",
+  before [; Go:
+            if (noun == e_obj && Ruins_Bushes in Ruins) {
+              ! if we are going east but the bushes are still here
+              print "The bushes are blocking your way! If only someone would cut them down with a sharp object!";
+              return true;
+            } else {
+              return false;
+            }
+         ],
   sw_to Forest_Glade,
   e_to Cave_Entrance,
   s_to Marshes;
@@ -62,7 +71,14 @@ Object -> Ruins_Bushes "bushes"
             ! print a message about the bushes being cut
             ! delete the bushes object
             ! if not, hint that they need a machete
-            print_ret "we cut the bushes";
+            if (machete in player) {
+              print "You hack down the bushes with your machete. They won't get in your way anymore!";
+              remove self;
+              return true;
+            } else {
+              print "You karate chop the bushes with your bare hands to no avail. I wonder if there's a better way?"
+              return true;
+            }
             return true;
          ]
   with description "A bush of bushy bushes. The branches look small enough to be cut by a machete.";
