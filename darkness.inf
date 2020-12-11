@@ -65,6 +65,7 @@ Object -> machete "machete"
 
 Object -> Ruins_Bushes "bushes"
   has static
+  has pluralname
   with name "bushes",
   before [; Cut:
             ! check to see if the player is holding a machete
