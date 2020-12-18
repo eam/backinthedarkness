@@ -76,6 +76,8 @@ Object -> Ruins_Bushes "bushes"
             if (machete in player) {
               print "You hack down the bushes with your machete. They won't get in your way anymore!";
               remove self;
+              give Hooded_Figure ~concealed;
+              print "A hooded figure emerges from the shadows. They say 'Very impressive, for a novice.'";
               return true;
             } else {
               print "You karate chop the bushes with your bare hands to no avail. I wonder if there's a better way?";
@@ -84,6 +86,18 @@ Object -> Ruins_Bushes "bushes"
             return true;
          ]
   with description "A bush of bushy bushes. The branches look small enough to be cut by a machete.";
+
+Object -> Hooded_Figure "Hooded Figure"
+  has concealed
+  has animate
+  has proper
+  with name "figure",
+  life [; Answer:
+          print_ret "...";
+          Attack:
+          print_ret "Foolish! You don't want to attack me.";
+       ],
+  with description "A hooded figure cloaked in mystery";
   
 Object Marshes "Marshes"
   has light
@@ -128,16 +142,23 @@ Object Magma_Chamber "Magma Chamber"
   w_to Cave_Tunnel_E;
 
 Object -> Artifact "Ancient Artifact"
+  with name "artifact",
   with description "This bronze statue looks positively ancient, yet shines like the morning sun.
                     It's small enough that you might be able to take it.",
   before [; Take:
-            if(noun == e_obj && machete in player)
+            if (noun == machete && Artifact notin Magma_Chamber) {
+              print "You'd better not take the machete, it's keeping the pressure plate from triggering!";
+              return true;
+            };
+            if(noun == Artifact && machete in player)
               {
+                move machete to Magma_Chamber;
+                move Artifact to player;
+                return true;
+              } else {
                 ! if the player doesn't have a weight
                 print "On closer inspection, you find that the artifact is sitting on a pressure plate. You'll need something heavy to put in its place.";
                 return true;
-              } else {
-                return false;
               }
          ];
 
