@@ -101,8 +101,13 @@ Object -> Hooded_Figure "Hooded Figure"
   
 Object Marshes "Marshes"
   has light
-  with description "Have you ever seen Lord of the Rings? These marshes look a lot like that!",
+  with description "The ground softens as you walk through the tall grass. A thick mist envelops the area.
+                    You trip on a rock as you enter the area.",
   n_to Ruins;
+
+Object -> Marshes_Rock "Rock"
+  with name "rock",
+  with description "A moss-covered rock that you nearly twisted your ankle on. Still, it might be useful for something.";
 
 Object Cave_Entrance "Cave Entrance"
   has light
@@ -126,7 +131,7 @@ Object -> Issac "Issac, the shopkeep"
 
 Object Cave_Room "Cave Room"
   with description "The cave walls are brownish grey. It smells like sulfur.
-				    There are three tunnels that go to the east, north, and south.",
+                    There are three tunnels that go to the east, north, and south.",
   u_to Cave_Entrance,
   e_to Cave_Tunnel_E;
 
@@ -146,14 +151,15 @@ Object -> Artifact "Ancient Artifact"
   with description "This bronze statue looks positively ancient, yet shines like the morning sun.
                     It's small enough that you might be able to take it.",
   before [; Take:
-            if (noun == machete && Artifact notin Magma_Chamber) {
-              print "You'd better not take the machete, it's keeping the pressure plate from triggering!";
+            if (noun == Marshes_Rock && Artifact notin Magma_Chamber) {
+              print "You'd better not take the rock, it's keeping the pressure plate from triggering!";
               return true;
             };
-            if(noun == Artifact && machete in player)
+            if(noun == Artifact && Marshes_Rock in player)
               {
-                move machete to Magma_Chamber;
+                move Marshes_Rock to Magma_Chamber;
                 move Artifact to player;
+                print "You carefully replace the artifact with the rock you found. Fortunately, the rock keeps the pressure plate weighed down.";
                 return true;
               } else {
                 ! if the player doesn't have a weight
