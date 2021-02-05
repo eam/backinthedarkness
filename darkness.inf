@@ -29,6 +29,15 @@ Object Forest_Glade "Forest Glade"
  w_to Field_of_Flowers,
  ne_to Ruins;
 
+Object -> Oil_Lamp "a lamp"
+  with name "lamp" "lantern",
+  after [;
+          SwitchOn: give self light;
+          SwitchOff: give self ~light;
+        ],
+  with description "a slightly dinged lamp. It should still work.",
+  has switchable;
+
 Object Field_of_Flowers "Field of Flowers"
  has scenery
  has light
