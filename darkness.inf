@@ -144,6 +144,17 @@ Object Cave_Tunnel_E "East Cave Tunnel"
 Object Magma_Chamber "Magma Chamber"
   has light
   with description "The tunnel expands to a massive chasm floored with magma. On the other side of a narrow bridge, you can see a glimmering artifact.",
+  before [; Take:
+            if (noun == Marshes_Rock && Artifact notin Magma_Chamber) {
+              print "You'd better not take the rock, it's keeping the pressure plate from triggering!";
+              return true;
+            };
+            Drop:
+            if (noun == Marshes_Rock || noun == Artifact) {
+              print "You think twice before dropping that.";
+              return true;
+            }
+         ],
   w_to Cave_Tunnel_E;
 
 Object -> Artifact "Ancient Artifact"
@@ -151,10 +162,6 @@ Object -> Artifact "Ancient Artifact"
   with description "This bronze statue looks positively ancient, yet shines like the morning sun.
                     It's small enough that you might be able to take it.",
   before [; Take:
-            if (noun == Marshes_Rock && Artifact notin Magma_Chamber) {
-              print "You'd better not take the rock, it's keeping the pressure plate from triggering!";
-              return true;
-            };
             if(noun == Artifact && Marshes_Rock in player)
               {
                 move Marshes_Rock to Magma_Chamber;
