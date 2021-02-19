@@ -1,0 +1,19 @@
+
+digraph {
+    Town_Square:s        -> Forest_Glade:n;
+    Forest_Glade:n       -> Town_Square:s;
+    Forest_Glade:w       -> Field_of_Flowers:e;
+    Forest_Glade:ne      -> Ruins:sw;
+    Ruins:sw             -> Forest_Glade:ne;
+    Ruins:e              -> Cave_Entrance:w;
+    Ruins:s              -> Marshes:n;
+    Field_of_Flowers:e   -> Forest_Glade:w;
+    Marshes:n            -> Ruins:s;
+    Cave_Entrance:w      -> Ruins:e;
+    Cave_Entrance        -> Cave_Room;
+    Cave_Room            -> Cave_Entrance;
+    Cave_Room:e          -> Cave_Tunnel_E:w;
+    Cave_Tunnel_E:w      -> Cave_Room:e;
+    Cave_Tunnel_E:e      -> Magma_Chamber:w;
+    Magma_Chamber:w      -> Cave_Tunnel_E:e;
+}
