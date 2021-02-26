@@ -14,6 +14,7 @@ Include "grammar";
 
 [ Initialise;
   location = Forest_Glade;
+  StartDaemon(Oil_Lamp);
   print "
          A hole in the ground opens and you fly out landing on your feet.
          You are in a forest glade. 
@@ -36,20 +37,32 @@ Object -> Oil_Lamp "lamp"
           SwitchOff: give self ~light;
         ],
   before [;
-          Examine: print "It is an oil burning lantern, ";
+          Examine: print "It is an oil burning lamp, ";
             if (self hasnt on) "currently off.";
             if (self.oil_level < 10) "the flame is flickering.";
             "the flame is burning brightly.";
           SwitchOn:
             if (self.oil_level <= 0)
               "Unfortunately it appears to be out of oil.";
-          Fill: print "You try to fill up the lamp's oil tank, ";
+          Fill: print "You try to fill up the lamp ";
             if (Oil_Pool in parent(player)) {
-              self.oil_level = 100;
+              self.oil_level = 45;
               "You fill the lamp from the nearby pool of oil";
             } else {
               "But you are unable to find a nearby source of oil.";
             }
+         ],
+  daemon [;
+           if (self hasnt on) return;
+           if (--self.oil_level == 0)
+             give self ~light ~on;
+           if (self in location) {
+             switch (self.oil_level) {
+               10: "^The oil lamp's light is getting dimmer!";
+                5: "^The oil lamp flickers, it won't last much longer.";
+                0: "^The oil lamp suddenly goes out.";
+             }
+           }
          ],
   with description "a slightly dinged lamp. It should still work.",
   oil_level 0,
