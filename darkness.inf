@@ -14,6 +14,7 @@ Include "grammar";
 
 [ Initialise;
   location = Forest_Glade;
+  StartDaemon(Oil_Lamp);
   print "
          A hole in the ground opens and you fly out landing on your feet.
          You are in a forest glade. 
@@ -29,6 +30,44 @@ Object Forest_Glade "Forest Glade"
  w_to Field_of_Flowers,
  ne_to Ruins;
 
+Object -> Oil_Lamp "lamp"
+  with name "lamp" "lantern",
+  after [;
+          SwitchOn: give self light;
+          SwitchOff: give self ~light;
+        ],
+  before [;
+          Examine: print "It is an oil burning lamp, ";
+            if (self hasnt on) "currently off.";
+            if (self.oil_level < 10) "the flame is flickering.";
+            "the flame is burning brightly.";
+          SwitchOn:
+            if (self.oil_level <= 0)
+              "Unfortunately it appears to be out of oil.";
+          Fill: print "You try to fill up the lamp ";
+            if (Oil_Pool in parent(player)) {
+              self.oil_level = 45;
+              "You fill the lamp from the nearby pool of oil";
+            } else {
+              "But you are unable to find a nearby source of oil.";
+            }
+         ],
+  daemon [;
+           if (self hasnt on) return;
+           if (--self.oil_level == 0)
+             give self ~light ~on;
+           if (self in location) {
+             switch (self.oil_level) {
+               10: "^The oil lamp's light is getting dimmer!";
+                5: "^The oil lamp flickers, it won't last much longer.";
+                0: "^The oil lamp suddenly goes out.";
+             }
+           }
+         ],
+  with description "a slightly dinged lamp. It should still work.",
+  oil_level 0,
+  has switchable;
+
 Object Field_of_Flowers "Field of Flowers"
  has scenery
  has light
@@ -41,6 +80,11 @@ Object Town_Square "Town Square"
   has light
   with description "The town guard is here. Some militia are fighting creatures of an unknown origin. ",
   s_to Forest_Glade;
+
+Object -> Oil_Pool "pool of oil"
+  with name "pool" "tarpit",
+  with description "a tarpit of bubbling oil.",
+  has static;
 
 Object Ruins "Ruins"
   has light
@@ -144,6 +188,17 @@ Object Cave_Tunnel_E "East Cave Tunnel"
 Object Magma_Chamber "Magma Chamber"
   has light
   with description "The tunnel expands to a massive chasm floored with magma. On the other side of a narrow bridge, you can see a glimmering artifact.",
+  before [; Take:
+            if (noun == Marshes_Rock && Artifact notin Magma_Chamber) {
+              print "You'd better not take the rock, it's keeping the pressure plate from triggering!";
+              return true;
+            };
+            Drop:
+            if (noun == Marshes_Rock || noun == Artifact) {
+              print "You think twice before dropping that.";
+              return true;
+            }
+         ],
   w_to Cave_Tunnel_E;
 
 Object -> Artifact "Ancient Artifact"
@@ -151,10 +206,6 @@ Object -> Artifact "Ancient Artifact"
   with description "This bronze statue looks positively ancient, yet shines like the morning sun.
                     It's small enough that you might be able to take it.",
   before [; Take:
-            if (noun == Marshes_Rock && Artifact notin Magma_Chamber) {
-              print "You'd better not take the rock, it's keeping the pressure plate from triggering!";
-              return true;
-            };
             if(noun == Artifact && Marshes_Rock in player)
               {
                 move Marshes_Rock to Magma_Chamber;
