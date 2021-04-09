@@ -78,13 +78,118 @@ Object Field_of_Flowers "Field of Flowers"
 
 Object Town_Square "Town Square"
   has light
-  with description "The town guard is here. Some militia are fighting creatures of an unknown origin. ",
-  s_to Forest_Glade;
+  with description "The town guard is here. Some militia are fighting creatures of an unknown origin. There is a decrepit old house to the east.",
+  s_to Forest_Glade,
+  e_to Haunted_House;
 
 Object -> Oil_Pool "pool of oil"
   with name "pool" "tarpit",
   with description "a tarpit of bubbling oil.",
   has static;
+
+! path
+Object Haunted_House "Haunted House"
+  has light
+  with description "A decrepit estate, long since abandoned. It's rumoured to be haunted.",
+  e_to Haunted_House_Hallway,
+  w_to Town_Square;
+
+Object Haunted_House_Hallway "Haunted House Hallway"
+  has light
+  with description "A long hallway with many doors. On the floor there is a slimy looking manhole. A grey shimmering spot on the wall to the northeast which is hard for your eyes to focus on. A sinister looking red door with strange black markings on it. To the north there is a circular vault door with a nuclear symbol on the front. To the southwest there is a wooden door covered in green stuff. To the southeast there are two oak doors, behind which you can see a magical portal and through that a palace. To the east is a metal door splattered with blood, with a sign made out of skin that reads 'morgue'. On the ceiling you see a out of place yellow door with a symbol made up of tentacles in the shape of a triangle. To the northwest you see a fancy door with patterns and an inscription in Latin. To the south there is a door with many knobs, it's hard to tell which is the real one.",
+
+  nw_to Ancient_Ruins, ! Sarah
+  u_to Rock_Room, ! EmoWolf10
+  e_to Morgue, ! Spencer Cage
+  se_to Lobby, ! 
+  sw_to Swampy_Room, ! Eddie Suarez
+  n_to Post_Nuclear_City, ! JamesFenix
+  d_to Dark_Slide, ! Pez
+  ne_to Limbo, ! Mystic
+  w_to Haunted_House;
+!  Survival_Bunker Gameactive
+! Sinister red door - TODO 
+!
+  
+! Limbo
+
+Object Survival_Bunker "Survival Bunker"
+  has light
+  has scenery
+  with description "A concrete bunker loaded with food and water. In the middle of the room is a big red button!";
+
+Object -> Big_Red_Button "Big Red Button"
+  with name "button",
+  before [;
+    Push:
+      deadflag=1;
+!      "You push the button and have unleashed something horrible. Good job, hero!";
+  ],
+  with description "A big red button";
+
+! this is a trap room
+Object Dark_Slide "Dark Slide"
+  has light
+  has scenery
+  with description "Opening the manhole you see a slide leading down into a tunnel with barbs pointing down. You think you can enter, but the bards will prevent you from coming back up. There are a pile of bones in front of the door.";
+
+Object -> Death_Keys "Keys"
+  with name "keys",
+  before [;
+    Insert:
+      if (noun == Many_Locked_Door) {
+        deadflag=1;
+        "As you insert the key into the door the flesh starts to melt from your hand. You jump back, but the melting continues until you become a pile of bones on the floor.";
+      }
+  ],
+  with description "a set of keys";
+
+Object -> Many_Locked_Door "many locked door"
+   with name "door"
+   with description "A door covered in dozens of locks.";
+  
+
+Object Limbo "Limbo"
+  has light
+  has scenery
+  with description "Deciding to go through the wall despite the fact the shimmering grey spot is hard to look at, takes you to a place where it's just different shades of grey. It fills you with a sense that you're being watched. The place you are in seems to go on forever. The feeling you felt of a person watching you grows until it happens a figure appears. Could this be the same shadowy figure that you met in the ruins? This figure looks like it's made from both shadow and light ",
+  sw_to Haunted_House_Hallway;
+
+Object Post_Nuclear_City "Post-Nuclear City"
+  has light
+  has scenery
+  with description "You see a city desolated by a nuclear missile fallout with ruined buildings that are falling apart some still intact it is slightly cloudy and there seems to be a dark, bleek, atmosphere to the area there is people but they appear to be wearing future like armor.",
+  s_to Haunted_House_Hallway;
+
+Object Swampy_Room "Swampy Room"
+  has light
+  has scenery
+  with description "A swampy room made of green kelp and a lot of swamp related terrain. There you will see various skeletons buried under the roots, and also various trunks.",
+  ne_to Haunted_House_Hallway;
+
+Object Lobby "Lobby"
+  has light
+  has scenery
+  with description "A room made to greet people. In the middle of the room you see seven baroque chairs placed around a baroque style table. In the middle of the table you see a baroque style clock.",
+  nw_to Haunted_House_Hallway;
+
+Object Morgue "Morgue"
+  has light
+  has scenery
+  with description "The room is lined with vaults possibly containing bodies. There is a surgical table with saws. The room is slippery with blood. There's an incenerator nearby.",
+  w_to Haunted_House_Hallway;
+
+Object Rock_Room "Rock Room"
+  has light
+  has scenery
+  with description "It looks like it's carved out of the stone. There's not much here, the room is basically empty.",
+  d_to Haunted_House_Hallway;
+
+Object Ancient_Ruins "Ancient Ruins"
+  has light
+  has scenery
+  with description "These ruins are really run down and are probably full of booby traps. Be careful where you step!",
+  se_to Haunted_House_Hallway;
 
 Object Ruins "Ruins"
   has light
@@ -165,10 +270,8 @@ Object -> Issac "Issac, the shopkeep"
   description "A weathered man with a two foot beared. ",
   life [; Answer:
           print_ret "Hello there traveler, are you interested in some of my wares?";
-          return true;
           Attack:
           print_ret "Issac blocks your attack with his shield and says 'Hey! If you're looking for a fight, you could've just asked to spar!'";
-         return true;
        ],
   has animate proper male;
   
