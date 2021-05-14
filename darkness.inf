@@ -4,7 +4,7 @@
 ! version 1
 
 Constant Story "Back in the Darkness.";
-Constant Headline "Talk to the townspeople about the mysterious heavy fog.";
+Constant Headline "^Talk to the townspeople about the mysterious heavy fog.^";
 
 Constant MAX_CARRIED = 7;
 
@@ -15,9 +15,10 @@ Include "grammar";
 [ Initialise;
   location = Forest_Glade;
   StartDaemon(Oil_Lamp);
+  StartDaemon(Raised_Garden_Box);
   print "
          A hole in the ground opens and you fly out landing on your feet.
-         You are in a forest glade. 
+         You are in a forest glade. ^
         ";
 ];
 
@@ -29,6 +30,26 @@ Object Forest_Glade "Forest Glade"
  n_to Town_Square,
  w_to Field_of_Flowers,
  ne_to Ruins;
+
+Object -> Raised_Garden_Box "raised garden box"
+  with name "box" "garden",
+  daemon [;
+         ],
+  with description "A raised garden box made from rough-hewn redwood timbers.";
+
+Object -> Pumpkin_Seed "Pumpkin Seed"
+  with name "seeds",
+  with description "A pumpkin seed";
+! Pumpkin_Plant
+! Pumpkin_Fruit
+
+Object -> Pumpkin_Plant "pumpkin plant"
+  with name "pumpkin",
+  with description "A pumpkin plant";
+
+Object -> Pumpkin_Fruit "pumpkin fruit"
+  with name "pumpkin",
+  with description "A pumpkin fruit";
 
 Object -> Oil_Lamp "lamp"
   with name "lamp" "lantern",
