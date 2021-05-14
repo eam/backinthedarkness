@@ -108,6 +108,18 @@ Object -> Oil_Pool "pool of oil"
   with description "a tarpit of bubbling oil.",
   has static;
 
+Object -> Velociraptor "velociraptor"
+  with name "velociraptor",
+  with description "An 8ft tall velociraptor. When you see it you shrink back in fear.";
+
+Object -> Cave_Troll "cave troll"
+  with name "troll",
+  with description "a 10' tall cave troll";
+
+Object -> Goblins_Orcs "a group of goblins and orcs"
+  with name "goblins" "orcs",
+  with description "a group of goblins and orcs";
+
 ! path
 Object Haunted_House "Haunted House"
   has light
