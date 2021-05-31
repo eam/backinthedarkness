@@ -1,0 +1,29 @@
+///Fertilize the plant
+
+//Set the strength of the fertilizer
+if keyboard_check(vk_shift)
+{
+    if keyboard_check(vk_control)
+    {
+        //Ultra strength!
+        growth_modifier = 3
+    }
+    else
+    {
+        //Super strength!
+        growth_modifier = 2
+    }
+}
+else if keyboard_check(vk_control)
+{
+    //Oops! That was actually Roundup…
+    growth_modifier = -2
+}
+else
+{
+    //Regular Strengh
+    growth_modifier = 1
+}
+
+//How long until the growth modifier wears off?
+modifier_length = 5

@@ -1,0 +1,23 @@
+///A crunchy, delicious apple
+//JSYK: Any shared events in children of this object will override the parent's events
+
+//How grown is this plant?
+growth = 0
+
+//When does the plant reach maturity?
+maturity = 40
+
+//How long does the plant take to produce a fruit?
+fruit_rate = 10
+
+//How many fruit can the plant have at a time?
+fruit_maximum = 4
+
+//What is the base growth rate of the plant?
+growth_rate = 1
+
+//Is something boosting the growth rate of this plant?
+growth_modifier = 0
+
+//How long until the growth modifier wears off?
+modifier_length = 0
