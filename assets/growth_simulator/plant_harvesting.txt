@@ -1,0 +1,30 @@
+///Attempt to harvest the plant
+
+//First, check if the plant is matured
+//If it is, set a temporary variable to be used later
+//Otherwise, tell the player the plant isn't ready and exit
+if growth >= maturity
+    var harvest = growth-maturity
+else
+{
+    scr_message("This plant has not matured yet.", 150)
+    exit
+}
+
+//If that passes, determine how many fruit (if any) can be harvested
+if harvest < fruit_rate
+{
+    scr_message("There's no fruit to be harvested.", 150)
+    exit
+}
+else
+{
+    var picked = 0
+    while harvest >= fruit_rate
+    {
+        picked++
+        harvest -= fruit_rate
+        growth -= fruit_rate
+    }
+    scr_message("Harvested "+string(picked)+" fruit from the plant.",150)
+}

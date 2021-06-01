@@ -1,0 +1,28 @@
+///Update the plant
+
+//Increase the growth by the base rate
+growth += growth_rate
+
+//Increase/decrease the growth by the modified rate, if the modifier length is high enough
+if modifier_length > 0
+{
+    growth += growth_modifier
+    //Reduce the length of the modifier
+    modifier_length--
+    //Reset the modifier if it has expired
+    if modifier_length = 0
+        growth_modifier = 0
+}
+
+//If the growth exceeds the fruit limit, set it to said limit
+if growth > maturity+(fruit_rate*fruit_maximum)
+    growth = maturity+(fruit_rate*fruit_maximum)
+
+//If the growth dips into the negatives…
+if growth < 0
+{
+    //The plant has died
+    scr_message("A plant has succumbed to weedkiller.#Nice job breaking it, hero.", 300)
+    audio_play_sound(snd_failure,0,0)
+    instance_destroy()
+}
