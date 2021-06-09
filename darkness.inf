@@ -15,10 +15,12 @@ Include "grammar";
 [ Initialise;
   location = Forest_Glade;
   StartDaemon(Oil_Lamp);
-  StartDaemon(Raised_Garden_Box);
+  StartDaemon(Pumpkin_Plant);
   print "
-         A hole in the ground opens and you fly out landing on your feet.
-         You are in a forest glade. ^
+	 I feel warm rays of sunlight. I am laying in what feels like a meadow
+         of grass. With a pleasant breeze, my eyes flutter open and I hear the
+         terrifying call of an orc to the north towards town. ^
+
         ";
 ];
 
@@ -43,13 +45,45 @@ Object -> Pumpkin_Seed "Pumpkin Seed"
 ! Pumpkin_Plant
 ! Pumpkin_Fruit
 
-Object -> Pumpkin_Plant "pumpkin plant"
+! circle back and look
+! at whether we want stacked objects
+Class Pumpkin(50)
+  has edible,
   with name "pumpkin",
+  short_name "pumpkin fruit",
+  plural "pumpkins";
+
+Object -> Pumpkin_Plant "pumpkin plant"
+  with name "pumpkin" "plant",
+  before [ new_pumpkin;
+           Take:
+             if (self.fruit_growth_ticks > 20) {
+               self.fruit_growth_ticks = self.fruit_growth_ticks - 20;
+               new_pumpkin = Pumpkin.create();
+               if (new_pumpkin == nothing)
+                 "You paw through the pumpkin leaves but find no fruit.";
+               <<Take new_pumpkin>>;
+             } else {
+               print_ret "There is no pumpkin to be picked: ", self.fruit_growth_ticks;
+             }
+          Examine:
+            print_ret "you look at the pumpkin plant. It has ", self.fruit_growth_ticks / 20, " pumpkins ready to be picked.";
+         ],
+  daemon [;
+           if (self.fruit_growth_ticks < 60) {
+             self.fruit_growth_ticks++;
+           }
+         ],
+  fruit_growth_ticks 0,
   with description "A pumpkin plant";
 
-Object -> Pumpkin_Fruit "pumpkin fruit"
-  with name "pumpkin",
-  with description "A pumpkin fruit";
+! value that starts at zero, fruit_growth_ticks
+! count of 20, one fruit is harvestable
+! at 40, two fruits are
+! at 60 three fruits are
+! every time it increments by the fruit growth period
+! in this model, we have a plant which is counting ticks (growing)
+! and when we harvest we subtract.
 
 Object -> Oil_Lamp "lamp"
   with name "lamp" "lantern",
@@ -108,9 +142,38 @@ Object -> Oil_Pool "pool of oil"
   with description "a tarpit of bubbling oil.",
   has static;
 
+! Velociraptor are pack dinosaurs that hunt their prey
+! taming - jump on back, ride long enough become tame
 Object -> Velociraptor "velociraptor"
+  has animate,
   with name "velociraptor",
+  tame 0,
+  life [;
+          Attack:
+          print_ret "You reach for your weapon, then realize you don't have one. You could try using your fists but that would not be wise ";
+          Taste:
+          print_ret "You cut your tongue on its scales and the velociraptor stares at you as if to say 'what the heck is your problem?'";
+          Rub:
+          print_ret "The velociraptor purrs.";
+          Give:
+          !if (noun == Turkey_Leg) {  
+          if (noun has edible) {  
+            self.tame = self.tame + 5;
+            if (self.tame > 9) {
+              print_ret "The velociraptor looks tame.";
+            } else {
+              print_ret "The velociraptor eats the food but still looks hungry.";
+            }
+          } else {
+            print_ret "The velociraptor growls";
+          }
+       ],
   with description "An 8ft tall velociraptor. When you see it you shrink back in fear.";
+
+Object -> Turkey_Leg "turkey leg"
+  with name "turkey" "leg",
+  has edible,
+  with description "a big long turkey leg, just like the kind they have at theme parks - whatever that is!";
 
 Object -> Cave_Troll "cave troll"
   with name "troll",
@@ -118,7 +181,7 @@ Object -> Cave_Troll "cave troll"
 
 Object -> Goblins_Orcs "a group of goblins and orcs"
   with name "goblins" "orcs",
-  with description "a group of goblins and orcs";
+  with description "a group of goblins and orcs. You hear one say 'Meat's back on the menu boys!'";
 
 ! path
 Object Haunted_House "Haunted House"
@@ -307,7 +370,10 @@ Object -> Issac "Issac, the shopkeep"
           print_ret "Issac blocks your attack with his shield and says 'Hey! If you're looking for a fight, you could've just asked to spar!'";
        ],
   has animate proper male;
-  
+
+Object -> Cave_Troll2 "cave troll"
+  with name "troll",
+  description "A grungy cave troll. ";
 
 Object Cave_Room "Cave Room"
   with description "The cave walls are brownish grey. It smells like sulfur.
