@@ -12,10 +12,13 @@ Include "parser";
 Include "verblib";
 Include "grammar";
 
+Attribute sproutable;
+
 [ Initialise;
   location = Forest_Glade;
   StartDaemon(Oil_Lamp);
-  StartDaemon(Pumpkin_Plant);
+!  StartDaemon(Pumpkin_Plant);
+  StartDaemon(Raised_Garden_Box);
   print "
 	 I feel warm rays of sunlight. I am laying in what feels like a meadow
          of grass. With a pleasant breeze, my eyes flutter open and I hear the
@@ -34,35 +37,78 @@ Object Forest_Glade "Forest Glade"
  ne_to Ruins;
 
 Object -> Raised_Garden_Box "raised garden box"
+  has container static open,
   with name "box" "garden",
-  daemon [;
+  growth_ticks 0,
+  daemon [x;
+           if (self.growth_ticks < 10) {
+             self.growth_ticks++;
+           } else {
+             self.growth_ticks = 0;
+             ! for every seed in the box, turn it into a new instance of a plant
+             objectloop(x in Raised_Garden_Box) {
+               if (x has sproutable) {
+                 print "The ", (name) x, " sprouts into a full sized plant!^";
+                 remove x;
+                 x = Pumpkin_Plant.create();
+                 StartDaemon(x);
+                 move x to self;
+               } else {
+                 print "the garden box just has: ", (name) x, " sitting there.^";
+               }
+             }
+           }
          ],
   with description "A raised garden box made from rough-hewn redwood timbers.";
 
 Object -> Pumpkin_Seed "Pumpkin Seed"
-  with name "seeds",
+  has sproutable,
+  with name "seed" "seeds",
+  before [;
+         !Insert:
+           !print_ret "XXinserting ", noun, " into ", second, "?^";
+         ! also need to do this for Remove:
+         Take:
+           print "the parent object of seed is ", (name) parent(self), " !^";
+           if (parent(self) == Player) {
+             print_ret "You already have that!";
+           }
+           if (parent(self) == Raised_Garden_Box) {
+             print_ret "You can't remove ", (name) noun, " from the ", (name) parent(noun), "?^";
+           } else {
+             print "Removing ", (name) noun, " from ", (name) second, ".^";
+             move self to player;
+             return true;
+           };
+         Remove:
+           if (parent(self) == Raised_Garden_Box) {
+             print_ret "You can't remove ", (name) noun, " from the ", (name) parent(noun), "?^";
+           } else {
+             print "Removing ", (name) noun, " from ", (name) second, ".^";
+             move self to player;
+             return true;
+           };
+            
+         ],
   with description "A pumpkin seed";
 ! Pumpkin_Plant
 ! Pumpkin_Fruit
 
-! circle back and look
-! at whether we want stacked objects
-Class Pumpkin(50)
+Class Fruit(50)
   has edible,
-  with name "pumpkin",
-  short_name "pumpkin fruit",
-  plural "pumpkins";
+  with name "fruit";
 
-Object -> Pumpkin_Plant "pumpkin plant"
-  with name "pumpkin" "plant",
-  before [ new_pumpkin;
+Class Pumpkin_Plant(50)
+  has edible,
+  with name "plant",
+  before [ new_fruit;
            Take:
              if (self.fruit_growth_ticks > 20) {
                self.fruit_growth_ticks = self.fruit_growth_ticks - 20;
-               new_pumpkin = Pumpkin.create();
-               if (new_pumpkin == nothing)
+               new_fruit = Fruit.create();
+               if (new_fruit == nothing)
                  "You paw through the pumpkin leaves but find no fruit.";
-               <<Take new_pumpkin>>;
+               <<Take new_fruit>>;
              } else {
                print_ret "There is no pumpkin to be picked: ", self.fruit_growth_ticks;
              }
@@ -75,7 +121,65 @@ Object -> Pumpkin_Plant "pumpkin plant"
            }
          ],
   fruit_growth_ticks 0,
-  with description "A pumpkin plant";
+  plural "pumkpins",
+  with description "a class based pumpkin plant";
+
+! circle back and look
+! at whether we want stacked objects
+Class Pumpkin(50)
+  has edible,
+  with name "pumpkin",
+  short_name "pumpkin fruit",
+  plural "pumpkins";
+
+Class Fruit_Plant
+  with name "fruit",
+  before [ new_fruit;
+           Take:
+             if (self.fruit_growth_ticks > 20) {
+               self.fruit_growth_ticks = self.fruit_growth_ticks - 20;
+               new_fruit = Fruit.create();
+               if (new_fruit == nothing)
+                 "You paw through the pumpkin leaves but find no fruit.";
+               <<Take new_fruit>>;
+             } else {
+               print_ret "There is no pumpkin to be picked: ", self.fruit_growth_ticks;
+             }
+          Examine:
+            print_ret "you look at the pumpkin plant. It has ", self.fruit_growth_ticks / 20, " pumpkins ready to be picked.";
+         ],
+  daemon [;
+           if (self.fruit_growth_ticks < 60) {
+             self.fruit_growth_ticks++;
+           }
+         ],
+  fruit_growth_ticks 0,
+  with description "a fruit plant";
+  
+
+!Object -> Pumpkin_Plant "pumpkin plant"
+!  with name "pumpkin" "plant",
+!  before [ new_pumpkin;
+!           Take:
+!             if (self.fruit_growth_ticks > 20) {
+!               self.fruit_growth_ticks = self.fruit_growth_ticks - 20;
+!               new_pumpkin = Pumpkin.create();
+!               if (new_pumpkin == nothing)
+!                 "You paw through the pumpkin leaves but find no fruit.";
+!               <<Take new_pumpkin>>;
+!             } else {
+!               print_ret "There is no pumpkin to be picked: ", self.fruit_growth_ticks;
+!             }
+!          Examine:
+!            print_ret "you look at the pumpkin plant. It has ", self.fruit_growth_ticks / 20, " pumpkins ready to be picked.";
+!         ],
+!  daemon [;
+!           if (self.fruit_growth_ticks < 60) {
+!             self.fruit_growth_ticks++;
+!           }
+!         ],
+!  fruit_growth_ticks 0,
+!  with description "A pumpkin plant";
 
 ! value that starts at zero, fruit_growth_ticks
 ! count of 20, one fruit is harvestable
